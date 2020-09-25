@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: "jdbc:mysql://mysql-cargo-dev:3306/routingmsdb?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=EST&useSSL=false&allowPublicKeyRetrieval=true"
+    username: routingmsdb
+    password: routingmsdb
+  
+  application:
+    name: "${IMAGE_NAME:template-spring-boot}"    
+
+swagger:
+  baseApiPackage:
+  - "com.cargotracker"
+  - "com.ibm.health"
+  title: "cargo-routing-service"
+  description: "cargo-routing-service"
+  version: "1.0.0"
+  termsOfServiceUrl: ""
+
+  license: "MIT"
+  licenseUrl: ""
+
+management:
+  endpoints:
+    web:
+      base-path: "/metrics"
+      exposure:
+        include: "*"
+
+server:
+  port: ${PORT:8003}
+
+logging:
+  level:
+    ROOT: ${LOG_LEVEL:INFO}
+    com.ibm.cloud_garage: DEBUG
+    org.springframework: ERROR
+    org.springframework.web: WARN
+    org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+    ch.qos.logback.classic: ERROR
+  pattern:
+    console: "%d{YYYY-dd-MM HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %X{X-B3-TraceId:-} ${spring.application.name} %logger{39}.%M %L - %msg%n"

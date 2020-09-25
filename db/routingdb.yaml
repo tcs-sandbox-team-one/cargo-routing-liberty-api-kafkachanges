@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: routing-db-svc
+  namespace: cargotracker-backend
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: routing-db
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: routing-db
+  namespace: cargotracker-backend
+spec:
+  selector:
+    matchLabels:
+      app: routing-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: routing-db
+    spec:
+      containers:
+      - image: mysql
+        name: routingdbcontainer
+        env:
+          # Use secret in real usage
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+          name: routingdb
+        volumeMounts:
+        - name: routingdb-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: routingdb-persistent-storage
+        persistentVolumeClaim:
+          claimName: routingdb-pvc-claim
